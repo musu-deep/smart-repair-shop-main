@@ -6,6 +6,9 @@ on:
     paths:
       - "bootstrap/**"
       - ".github/workflows/bootstrap.yml"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,9 +21,10 @@ jobs:
   import-project:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout main repository state
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Wait for all archive parts
@@ -32,12 +36,11 @@ jobs:
           echo "count=${#parts[@]}" >> "$GITHUB_OUTPUT"
           if [ "${#parts[@]}" -ne 9 ]; then
             echo "Archive is incomplete; waiting for all 9 parts."
-            exit 0
+            exit 1
           fi
           echo "ready=true" >> "$GITHUB_OUTPUT"
 
-      - name: Restore project
-        if: steps.parts.outputs.ready == 'true'
+      - name: Restore and verify project
         shell: bash
         run: |
           cat bootstrap/project.tar.gz.b64.part-* > /tmp/project.tar.gz.b64
@@ -48,7 +51,6 @@ jobs:
           rm -f .github/workflows/bootstrap.yml
 
       - name: Commit imported application
-        if: steps.parts.outputs.ready == 'true'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
