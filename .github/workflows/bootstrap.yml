@@ -30,8 +30,8 @@ jobs:
           shopt -s nullglob
           parts=(bootstrap/project.tar.gz.b64.part-*)
           echo "count=${#parts[@]}" >> "$GITHUB_OUTPUT"
-          if [ "${#parts[@]}" -ne 13 ]; then
-            echo "Archive is incomplete; waiting for all 13 parts."
+          if [ "${#parts[@]}" -ne 9 ]; then
+            echo "Archive is incomplete; waiting for all 9 parts."
             exit 0
           fi
           echo "ready=true" >> "$GITHUB_OUTPUT"
