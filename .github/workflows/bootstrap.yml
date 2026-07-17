@@ -30,8 +30,8 @@ jobs:
           shopt -s nullglob
           parts=(bootstrap/project.tar.gz.b64.part-*)
           echo "count=${#parts[@]}" >> "$GITHUB_OUTPUT"
-          if [ "${#parts[@]}" -ne 16 ]; then
-            echo "Archive is incomplete; waiting for all 16 parts."
+          if [ "${#parts[@]}" -ne 13 ]; then
+            echo "Archive is incomplete; waiting for all 13 parts."
             exit 0
           fi
           echo "ready=true" >> "$GITHUB_OUTPUT"
@@ -42,7 +42,7 @@ jobs:
         run: |
           cat bootstrap/project.tar.gz.b64.part-* > /tmp/project.tar.gz.b64
           base64 --decode /tmp/project.tar.gz.b64 > /tmp/project.tar.gz
-          echo "6fb90f724514a364e6aee961f39a84f9e76e8cf29940e8a5bbf48d3b942d886c  /tmp/project.tar.gz" | sha256sum --check
+          echo "ccd2ce2ab36eacb8ac8181d9192f01cf396aa5547f50e892eefcf9eb1ccf1b0e  /tmp/project.tar.gz" | sha256sum --check
           tar -xzf /tmp/project.tar.gz -C .
           rm -rf bootstrap
           rm -f .github/workflows/bootstrap.yml
